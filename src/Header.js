@@ -1,11 +1,11 @@
+import logo from "./clock.png";
 import './Header.css';
-import logo from "./logo.png";
 
 function Header(){
     return(
-        <header>
+        <header className="header">
              <img src={logo} alt="App Logo" className="logo" />
-            <h1>Study Planner</h1>
+             <h1 className="title">Study planner</h1>
 
         </header>
     );
