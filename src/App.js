@@ -1,6 +1,11 @@
 import './App.css';
+import Footer from './Footer';
+import GrowthCard from './GrowthCard';
 import Header from './Header';
-
+import MotivationCard from './MotivationCard';
+import Navbar from './Navbar';
+import TaskCard from './TaskCard';
+import TimerCard from './TimerCard';
 // function App() {
 //   return (
 //     <div className="App">
@@ -26,9 +31,15 @@ export default function App() {
   return (
     <div>
       <Header />
-      <main>
-        <p>Welcome to my React app 🚀</p>
-      </main>
+      <Navbar />
+      <div className='cards'>
+      <TaskCard />
+      <TimerCard />
+      <GrowthCard/>
+      <MotivationCard/>
+      </div>
+      <Footer />
     </div>
   );
 }
+

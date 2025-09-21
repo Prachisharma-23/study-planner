@@ -1,0 +1,12 @@
+.task-card {
+  width: 350px;
+  background-color: #e3f2fd !important;
+  margin: 20px auto;
+  padding: 10px;
+  border-left: 5px solid #2a85ab;
+}
+
+.task-title {
+  font-size: 18px;
+  font-weight: bold;
+}

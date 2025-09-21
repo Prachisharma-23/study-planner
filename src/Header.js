@@ -6,7 +6,6 @@ function Header(){
         <header className="header">
              <img src={logo} alt="App Logo" className="logo" />
              <h1 className="title">Study planner</h1>
-
         </header>
     );
 }
