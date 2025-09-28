@@ -1,26 +1,18 @@
+import axios from "axios";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import axios from "axios";
-import { useEffect, useState } from "react";
 import "./TaskCard.css";
 
-export default function TaskCard() {
-  const [tasks, setTasks] = useState([]);
+export default function TaskCard({ onTaskAdded }) {
   const [newTask, setNewTask] = useState("");
-
-  // Fetch tasks from backend when component mounts
-  useEffect(() => {
-    axios
-      .get("http://localhost:8080/api/tasks")
-      .then((response) => setTasks(response.data))
-      .catch((error) => console.error("Error fetching tasks:", error));
-  }, []);
+  const navigate = useNavigate();
 
   // Add a new task to backend
   const addTask = () => {
@@ -29,11 +21,13 @@ export default function TaskCard() {
     axios
       .post(
         "http://localhost:8080/api/tasks",
-        { title: newTask }, // adjust field if backend expects `name` or `taskName`
+        { title: newTask }, // backend will set completed=false
         { headers: { "Content-Type": "application/json" } }
       )
       .then((response) => {
-        setTasks([...tasks, response.data]); // append newly created task
+        if (onTaskAdded) {
+          onTaskAdded(response.data);
+        }
         setNewTask("");
       })
       .catch((error) => console.error("Error adding task:", error));
@@ -45,11 +39,7 @@ export default function TaskCard() {
         <Typography className="task-title" gutterBottom>
           Task Manager
         </Typography>
-        <Typography variant="body2" component="p" gutterBottom>
-          Organize and manage your daily tasks effectively.
-        </Typography>
 
-        {/* Input field for new task */}
         <TextField
           label="New Task"
           variant="outlined"
@@ -59,8 +49,8 @@ export default function TaskCard() {
           onChange={(e) => setNewTask(e.target.value)}
         />
 
-        {/* Button to add new task */}
         <Button
+          size="small"
           variant="contained"
           color="primary"
           onClick={addTask}
@@ -68,19 +58,13 @@ export default function TaskCard() {
         >
           Add Task
         </Button>
-
-        {/* List of tasks */}
-        <List>
-          {tasks.map((task) => (
-            <ListItem key={task.id}>{task.title}</ListItem>
-          ))}
-        </List>
       </CardContent>
 
       <CardActions>
-        <Button size="small">View Tasks</Button>
+        <Button size="small" onClick={() => navigate("/tasks")}>
+          View Tasks
+        </Button>
       </CardActions>
     </Card>
   );
 }
-
