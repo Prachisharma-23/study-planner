@@ -1,22 +1,29 @@
-import Button from "@mui/material/Button";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import Typography from "@mui/material/Typography";
+import {
+  Button,
+  Card,
+  CardContent,
+  List,
+  ListItem,
+  Typography,
+} from "@mui/material";
 import axios from "axios";
 import confetti from "canvas-confetti";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./TaskListPage.css";
 
 export default function TaskListPage() {
   const [tasks, setTasks] = useState([]);
   const [message, setMessage] = useState("");
+  const timeoutRef = useRef(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     fetchTasks();
+    return () => {
+      // cleanup timeout on unmount
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
   }, []);
 
   const fetchTasks = () => {
@@ -26,12 +33,36 @@ export default function TaskListPage() {
       .catch((error) => console.error("Error fetching tasks:", error));
   };
 
+  // showCheerMessage is DEFINITELY used below in markComplete
+  const showCheerMessage = () => {
+    setMessage("🎉 Hurray! You completed the task!");
+
+    // looped bursts for better visibility
+    const duration = 1500; // ms
+    const end = Date.now() + duration;
+    (function frame() {
+      confetti({
+        particleCount: 7,
+        spread: 70,
+        startVelocity: 30,
+        origin: { y: 0.6 },
+      });
+      if (Date.now() < end) {
+        requestAnimationFrame(frame);
+      }
+    })();
+
+    // hide message after 3 seconds
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    timeoutRef.current = setTimeout(() => setMessage(""), 3000);
+  };
+
   const markComplete = (taskId) => {
     axios
       .put(`http://localhost:8080/api/tasks/${taskId}/complete`)
       .then(() => {
         fetchTasks();
-        showCheerMessage();
+        showCheerMessage(); // <-- call it here so it's used
       })
       .catch((error) => console.error("Error marking task complete:", error));
   };
@@ -43,15 +74,7 @@ export default function TaskListPage() {
       .catch((error) => console.error("Error deleting task:", error));
   };
 
-  const showCheerMessage = () => {
-    setMessage("🎉 Hurray! You completed the task!");
-    confetti({
-      particleCount: 100,
-      spread: 70,
-      origin: { y: 0.6 },
-    });
-    setTimeout(() => setMessage(""), 3000);
-  };
+  const pending = tasks.filter((t) => !t.completed).length;
 
   return (
     <div style={{ padding: "20px", position: "relative" }}>
@@ -81,7 +104,16 @@ export default function TaskListPage() {
                     textDecoration: task.completed ? "line-through" : "none",
                   }}
                 >
-                  <span>{task.title}</span>
+                  <span>
+                    {task.completed ? "✅" : "⏳"} {task.title} | 📅{" "}
+                    {task.deadline ? task.deadline : "—"} |{" "}
+                    {task.priority === "High"
+                      ? "⚡ High"
+                      : task.priority === "Med"
+                      ? "🟡 Med"
+                      : "🟢 Low"}
+                  </span>
+
                   <div style={{ display: "flex", gap: "8px" }}>
                     {!task.completed && (
                       <Button
@@ -90,16 +122,17 @@ export default function TaskListPage() {
                         size="small"
                         onClick={() => markComplete(task.id)}
                       >
-                        Mark Complete
+                        Mark Done
                       </Button>
                     )}
+
                     <Button
                       variant="outlined"
                       color="error"
                       size="small"
                       onClick={() => deleteTask(task.id)}
                     >
-                      Delete
+                      🗑
                     </Button>
                   </div>
                 </ListItem>
@@ -110,8 +143,13 @@ export default function TaskListPage() {
               </Typography>
             )}
           </List>
+
+          <Typography style={{ marginTop: "15px" }}>
+            You have {pending} tasks pending.
+          </Typography>
         </CardContent>
       </Card>
     </div>
   );
 }
+

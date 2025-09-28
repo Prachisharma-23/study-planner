@@ -1,69 +1,91 @@
+import {
+  Button, Card, CardActions, CardContent,
+  MenuItem, Select,
+  TextField, Typography
+} from "@mui/material";
 import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import Button from "@mui/material/Button";
-import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
-import CardContent from "@mui/material/CardContent";
-import TextField from "@mui/material/TextField";
-import Typography from "@mui/material/Typography";
-import "./TaskCard.css";
-
 export default function TaskCard({ onTaskAdded }) {
-  const [newTask, setNewTask] = useState("");
+  const [task, setTask] = useState({
+    title: "",
+    category: "",
+    deadline: "",
+    priority: "Low",
+  });
   const navigate = useNavigate();
 
-  // Add a new task to backend
   const addTask = () => {
-    if (newTask.trim() === "") return;
-
-    axios
-      .post(
-        "http://localhost:8080/api/tasks",
-        { title: newTask }, // backend will set completed=false
-        { headers: { "Content-Type": "application/json" } }
-      )
-      .then((response) => {
-        if (onTaskAdded) {
-          onTaskAdded(response.data);
-        }
-        setNewTask("");
-      })
-      .catch((error) => console.error("Error adding task:", error));
+    if (!task.title.trim()) return;
+    axios.post("http://localhost:8080/api/tasks", task)
+      .then((res) => {
+        onTaskAdded && onTaskAdded(res.data);
+        setTask({ title: "", category: "", deadline: "", priority: "Low" });
+      });
   };
 
   return (
-    <Card className="task-card">
+    <Card style={{ margin: "20px auto", width: "500px" }}>
       <CardContent>
-        <Typography className="task-title" gutterBottom>
-          Task Manager
+        <Typography variant="h6">📌 Task Manager</Typography>
+        <Typography variant="body2" gutterBottom>
+          Organize your daily tasks easily ✨
         </Typography>
 
         <TextField
           label="New Task"
-          variant="outlined"
-          size="small"
           fullWidth
-          value={newTask}
-          onChange={(e) => setNewTask(e.target.value)}
+          margin="dense"
+          value={task.title}
+          onChange={(e) => setTask({ ...task, title: e.target.value })}
         />
 
+        <Select
+          fullWidth
+          value={task.category}
+          displayEmpty
+          onChange={(e) => setTask({ ...task, category: e.target.value })}
+          style={{ marginTop: "10px" }}
+        >
+          <MenuItem value="">Category</MenuItem>
+          <MenuItem value="Study">Study</MenuItem>
+          <MenuItem value="Work">Work</MenuItem>
+          <MenuItem value="Personal">Personal</MenuItem>
+        </Select>
+
+        <TextField
+          type="date"
+          fullWidth
+          margin="dense"
+          value={task.deadline}
+          onChange={(e) => setTask({ ...task, deadline: e.target.value })}
+        />
+
+        <Select
+          fullWidth
+          value={task.priority}
+          onChange={(e) => setTask({ ...task, priority: e.target.value })}
+          style={{ marginTop: "10px" }}
+        >
+          <MenuItem value="High">High</MenuItem>
+          <MenuItem value="Med">Med</MenuItem>
+          <MenuItem value="Low">Low</MenuItem>
+        </Select>
+
         <Button
-          size="small"
           variant="contained"
           color="primary"
+          fullWidth
           onClick={addTask}
-          style={{ marginTop: "10px" }}
+          style={{ marginTop: "15px" }}
         >
           Add Task
         </Button>
       </CardContent>
 
       <CardActions>
-        <Button size="small" onClick={() => navigate("/tasks")}>
-          View Tasks
-        </Button>
+        <Button size="small" onClick={() => navigate("/tasks")}>View Tasks</Button>
       </CardActions>
     </Card>
   );
