@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import "./HeroSection.css";
 
 export default function HeroSection() {
@@ -9,12 +10,12 @@ export default function HeroSection() {
           Organize tasks, track progress, and stay motivated every single day.
         </p>
         <div className="hero-buttons">
-          <a href="#tasks" className="btn-primary">
-            Get Started
-          </a>
-          <a href="#about" className="btn-secondary">
-            Learn More
-          </a>
+          <Link to="/login" className="btn-primary">
+            Login
+          </Link>
+          <Link to="/signup" className="btn-secondary">
+            Sign Up
+          </Link>
         </div>
       </div>
       <div className="hero-image">

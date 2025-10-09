@@ -1,0 +1,95 @@
+/* Container for the signup form */
+.signup-container {
+  max-width: 400px;
+  margin: 80px auto;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  background-color: #fff;
+  font-family: Arial, sans-serif;
+}
+
+/* Heading */
+.signup-container h2 {
+  margin-bottom: 20px;
+  font-size: 24px;
+  font-weight: 700;
+  color: #333;
+}
+
+/* Inputs */
+.signup-container input {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+  outline: none;
+  transition: border 0.3s, box-shadow 0.3s;
+}
+
+.signup-container input:focus {
+  border-color: #3f51b5;
+  box-shadow: 0 0 5px rgba(63, 81, 181, 0.5);
+}
+
+/* Buttons */
+.signup-container button {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.signup-container .btn-primary {
+  background-color: #3f51b5;
+}
+
+.signup-container .btn-primary:hover {
+  background-color: #303f9f;
+  box-shadow: 0 4px 10px rgba(63, 81, 181, 0.3);
+}
+
+/* Optional secondary button */
+.signup-container .btn-secondary {
+  background-color: #673ab7;
+}
+
+.signup-container .btn-secondary:hover {
+  background-color: #5e35b1;
+  box-shadow: 0 4px 10px rgba(103, 58, 183, 0.3);
+}
+.signup-container button{
+   width: 100%;
+  padding: 12px;
+  margin-top: 15px;
+  border-radius: 8px;
+  border: none;
+  background-color: #4caf50;
+  color: white;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+/* Message text */
+.signup-message {
+  margin-top: 15px;
+  font-size: 14px;
+}
+
+.signup-message.success {
+  color: #16a34a;
+}
+
+.signup-message.error {
+  color: #dc2626;
+}

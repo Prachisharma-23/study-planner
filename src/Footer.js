@@ -7,7 +7,7 @@ export default function Footer() {
       {/* Footer Links */}
       <div className="footer-links">
         <Link to="/">Home</Link>
-        <Link to="/task">Tasks</Link>
+        <Link to="/add-task">Tasks</Link>
         <Link to="/timer">Timer</Link>
         <Link to="/growth">Growth</Link>
         <Link to="/motivation">Motivation</Link>

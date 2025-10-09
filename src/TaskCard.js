@@ -28,7 +28,7 @@ export default function TaskCard({ onTaskAdded }) {
   return (
     <Card style={{ margin: "20px auto", width: "500px" }}>
       <CardContent>
-        <Typography variant="h6">📌 Task Manager</Typography>
+        <Typography variant="h6">Task Manager</Typography>
         <Typography variant="body2" gutterBottom>
           Organize your daily tasks easily ✨
         </Typography>
