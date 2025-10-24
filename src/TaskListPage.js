@@ -27,8 +27,13 @@ export default function TaskListPage() {
   }, []);
 
   const fetchTasks = () => {
+    const username =localStorage.getItem("username");
+    if (!username) {
+      console.error("No username found in localStorage");
+      return;
+    }
     axios
-      .get("http://localhost:8080/api/tasks")
+      .get(`http://localhost:8080/api/tasks/${username}`)
       .then((response) => setTasks(response.data))
       .catch((error) => console.error("Error fetching tasks:", error));
   };

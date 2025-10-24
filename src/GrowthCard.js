@@ -16,28 +16,42 @@ import {
 } from "recharts";
 import "./GrowthCard.css";
 
+// Move quotes outside the component so they're a stable reference
+const QUOTES = [
+  "Small steps every day lead to big results 🚀",
+  "Consistency beats intensity ✨",
+  "Don’t watch the clock, do what it does — keep going ⏳",
+  "Your future self will thank you 💡",
+];
+
 export default function GrowthCard() {
   const [growth, setGrowth] = useState(null);
   const [quote, setQuote] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const fetchProgress = async () => {
     try {
-      const res = await axios.get("http://localhost:8080/api/growth");
+      setLoading(true);
+      const username = localStorage.getItem("username"); // 👈 get logged-in username
+      if (!username) {
+        alert("Please log in first to view your progress.");
+        setLoading(false);
+        return;
+      }
+
+      const res = await axios.get(`http://localhost:8080/api/growth/${username}`);
       setGrowth(res.data);
     } catch (err) {
-      console.error(err);
+      console.error("Error fetching growth:", err);
+      alert("Unable to fetch growth data. Please try again later.");
+    } finally {
+      setLoading(false);
     }
   };
 
-  const quotes = [
-    "Small steps every day lead to big results 🚀",
-    "Consistency beats intensity ✨",
-    "Don’t watch the clock, do what it does — keep going ⏳",
-    "Your future self will thank you 💡",
-  ];
-
+  // Pick a random quote on mount (QUOTES is stable so [] is fine)
   useEffect(() => {
-    const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+    const randomQuote = QUOTES[Math.floor(Math.random() * QUOTES.length)];
     setQuote(randomQuote);
   }, []);
 
@@ -58,7 +72,9 @@ export default function GrowthCard() {
           Growth Tracker
         </Typography>
 
-        {growth ? (
+        {loading ? (
+          <Typography variant="body2">Loading your progress...</Typography>
+        ) : growth ? (
           <>
             <Typography variant="body2" gutterBottom>
               ✅ Tasks Completed: {growth.completedTasks}/{growth.totalTasks}
@@ -67,7 +83,7 @@ export default function GrowthCard() {
               ⏳ Study Hours: {growth.studyHours.toFixed(2)}
             </Typography>
             <Typography variant="body2" gutterBottom>
-              🔥 Streak: {growth.streakDays || 0} days
+              📈 Growth Rate: {growth.growthPercent?.toFixed(2) || 0}%
             </Typography>
 
             <Divider sx={{ marginY: 2 }} />
@@ -101,7 +117,11 @@ export default function GrowthCard() {
 
         <Divider sx={{ marginY: 2 }} />
 
-        <Typography variant="body2" color="text.secondary" sx={{ fontStyle: "italic" }}>
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          sx={{ fontStyle: "italic" }}
+        >
           "{quote}"
         </Typography>
       </CardContent>
@@ -114,3 +134,4 @@ export default function GrowthCard() {
     </Card>
   );
 }
+

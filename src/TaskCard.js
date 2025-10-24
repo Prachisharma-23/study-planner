@@ -18,11 +18,20 @@ export default function TaskCard({ onTaskAdded }) {
 
   const addTask = () => {
     if (!task.title.trim()) return;
-    axios.post("http://localhost:8080/api/tasks", task)
+
+    const username = localStorage.getItem("username");
+    if(!username) {
+      alert("Please log in to add tasks.");
+      return;
+    }
+
+    const taskwithUser = { ...task, username };
+    axios.post("http://localhost:8080/api/tasks", taskwithUser)
       .then((res) => {
         onTaskAdded && onTaskAdded(res.data);
         setTask({ title: "", category: "", deadline: "", priority: "Low" });
-      });
+      })
+      .catch((err) => console.error("Error adding task:", err));
   };
 
   return (

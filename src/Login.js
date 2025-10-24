@@ -20,7 +20,14 @@ const Login = () => {
 
       if (response.ok) {
         const data = await response.json();
-        setMessage("✅ Login successful! Welcome " + data.username);
+
+        // ✅ Save username and token (if you have one)
+        localStorage.setItem("username", data.username);
+          setMessage("✅ Login successful! Welcome " + data.username);
+
+        // ⏳ Redirect to dashboard after short delay
+        setTimeout(() => {
+          window.location.href = "/dashboard";        }, 1000);
       } else {
         const errorText = await response.text();
         setMessage("❌ Login failed: " + errorText);
@@ -56,7 +63,11 @@ const Login = () => {
         <button type="submit">Login</button>
 
         {message && (
-          <p className={`login-message ${message.includes("✅") ? "success" : "error"}`}>
+          <p
+            className={`login-message ${
+              message.includes("✅") ? "success" : "error"
+            }`}
+          >
             {message}
           </p>
         )}
@@ -66,3 +77,4 @@ const Login = () => {
 };
 
 export default Login;
+

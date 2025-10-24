@@ -11,6 +11,7 @@ import Signup from "./Signup";
 import TaskCard from "./TaskCard";
 import TaskListPage from "./TaskListPage";
 import TimerCard from "./TimerCard";
+import Dashboard from "./DashBoard";
 
 export default function App() {
   return (
@@ -70,6 +71,13 @@ export default function App() {
                   <MotivationCard />
                 </div>
               }
+            />
+            <Route path="/dashboard"
+            element={
+              <div className="page-content">
+                <Dashboard />
+              </div>
+            }
             />
           </Routes>
         </div>

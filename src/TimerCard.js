@@ -6,18 +6,19 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import "./TimerCard.css";
-
-// ⬇️ Import PieChart instead of LinearProgress
 import { Cell, Pie, PieChart, Tooltip } from "recharts";
+import "./TimerCard.css";
 
 export default function TimerCard() {
   const [status, setStatus] = useState("Idle");
-  const [timeLeft, setTimeLeft] = useState(0); // seconds countdown
+  const [timeLeft, setTimeLeft] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
   const [focusMinutes, setFocusMinutes] = useState(25);
   const [breakMinutes, setBreakMinutes] = useState(5);
   const [totalTime, setTotalTime] = useState(0);
+
+  
+  const username = localStorage.getItem("username");
 
   useEffect(() => {
     let interval;
@@ -33,39 +34,71 @@ export default function TimerCard() {
     return () => clearInterval(interval);
   }, [isRunning, timeLeft]);
 
+  // ✅ Start Focus Timer
   const startTimer = async () => {
-    await axios.post("http://localhost:8080/api/timer/start");
-    setStatus("Focusing...");
-    setTotalTime(focusMinutes * 60);
-    setTimeLeft(focusMinutes * 60); 
-    setIsRunning(true);
+    if (!username) {
+      alert("Please log in first!");
+      return;
+    }
+
+    try {
+      await axios.post(`http://localhost:8080/api/timer/start/${username}`);
+      setStatus("Focusing...");
+      setTotalTime(focusMinutes * 60);
+      setTimeLeft(focusMinutes * 60);
+      setIsRunning(true);
+    } catch (error) {
+      console.error("Error starting focus timer:", error);
+    }
   };
 
+  // ✅ Start Break Timer
   const startBreak = async () => {
-    await axios.post("http://localhost:8080/api/timer/start-break");
-    setStatus("On Break...");
-    setTotalTime(breakMinutes * 60);
-    setTimeLeft(breakMinutes * 60);
-    setIsRunning(true);
+    if (!username) {
+      alert("Please log in first!");
+      return;
+    }
+
+    try {
+      await axios.post(`http://localhost:8080/api/timer/start-break/${username}`);
+      setStatus("On Break...");
+      setTotalTime(breakMinutes * 60);
+      setTimeLeft(breakMinutes * 60);
+      setIsRunning(true);
+    } catch (error) {
+      console.error("Error starting break timer:", error);
+    }
   };
 
+  // ✅ Stop Timer
   const stopTimer = async () => {
-    await axios.post("http://localhost:8080/api/timer/stop");
-    setIsRunning(false);
-    setStatus("Stopped");
+    if (!username) {
+      alert("Please log in first!");
+      return;
+    }
+
+    try {
+      await axios.post(`http://localhost:8080/api/timer/stop/${username}`);
+      setIsRunning(false);
+      setStatus("Stopped");
+    } catch (error) {
+      console.error("Error stopping timer:", error);
+    }
   };
 
+  // ✅ Reset Timer (frontend only)
   const resetTimer = () => {
     setStatus("Idle");
     setTimeLeft(0);
     setIsRunning(false);
   };
 
-  function formatTime(sec) {
+  // Format seconds into mm:ss
+  const formatTime = (sec) => {
     const m = Math.floor(sec / 60).toString().padStart(2, "0");
     const s = (sec % 60).toString().padStart(2, "0");
     return `${m}:${s}`;
-  }
+  };
 
   // progress % calculation
   const progress = totalTime ? ((totalTime - timeLeft) / totalTime) * 100 : 0;
@@ -106,76 +139,56 @@ export default function TimerCard() {
           {timeLeft > 0 ? formatTime(timeLeft) : "00:00"}
         </Typography>
 
-        {/* ⬇️ PieChart replaces LinearProgress */}
+        {/* PieChart for progress */}
         <div style={{ display: "flex", justifyContent: "center", position: "relative" }}>
-  <PieChart width={200} height={200}>
-    <Pie
-      data={data}
-      cx="50%"
-      cy="50%"
-      innerRadius={60}
-      outerRadius={80}
-      paddingAngle={3}
-      dataKey="value"
-      isAnimationActive={true}
-      animationDuration={500}
-      animationEasing="ease-out"
-    >
-      {data.map((entry, index) => (
-        <Cell key={`cell-${index}`} fill={COLORS[index]} />
-      ))}
-    </Pie>
-    <Tooltip />
-  </PieChart>
+          <PieChart width={200} height={200}>
+            <Pie
+              data={data}
+              cx="50%"
+              cy="50%"
+              innerRadius={60}
+              outerRadius={80}
+              paddingAngle={3}
+              dataKey="value"
+              isAnimationActive={true}
+              animationDuration={500}
+              animationEasing="ease-out"
+            >
+              {data.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={COLORS[index]} />
+              ))}
+            </Pie>
+            <Tooltip />
+          </PieChart>
 
-  {/* Centered % text */}
-  <Typography
-    variant="h6"
-    sx={{
-      position: "absolute",
-      top: "53%",
-      left: "50%",
-      transform: "translate(-50%, -50%)",
-      fontWeight: "bold",
-    }}
-  >
-    {Math.round(progress)}%
-  </Typography>
-</div>
+          {/* Centered % text */}
+          <Typography
+            variant="h6"
+            sx={{
+              position: "absolute",
+              top: "53%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              fontWeight: "bold",
+            }}
+          >
+            {Math.round(progress)}%
+          </Typography>
+        </div>
 
-
-        <Typography
-          variant="subtitle1"
-          color="textSecondary"
-          className="status-text"
-        >
+        <Typography variant="subtitle1" color="textSecondary" className="status-text">
           {status}
         </Typography>
       </CardContent>
 
       <CardActions className="button-group">
-        <Button
-          size="small"
-          variant="contained"
-          onClick={startTimer}
-          disabled={isRunning}
-        >
+        <Button size="small" variant="contained" onClick={startTimer} disabled={isRunning}>
           Start Focus
         </Button>
-        <Button
-          size="small"
-          variant="outlined"
-          onClick={startBreak}
-          disabled={isRunning}
-        >
+        <Button size="small" variant="outlined" onClick={startBreak} disabled={isRunning}>
           Start Break
         </Button>
-        <Button
-          size="small"
-          onClick={stopTimer}
-          disabled={!isRunning}
-          color="error"
-        >
+        <Button size="small" onClick={stopTimer} disabled={!isRunning} color="error">
           Stop
         </Button>
         <Button size="small" onClick={resetTimer} disabled={isRunning}>
