@@ -1,30 +1,38 @@
 import { useEffect, useState } from "react";
 import "./DashBoard.css";
+
 const Dashboard = () => {
   const [tasks, setTasks] = useState([]);
+  const [growth, setGrowth] = useState(null);
   const [loading, setLoading] = useState(true);
   const username = localStorage.getItem("username");
 
   useEffect(() => {
     if (!username) {
-      // 🚪 Redirect if not logged in
+      // Redirect if not logged in
       window.location.href = "/login";
       return;
     }
 
-    // 🧩 Fetch user-specific tasks
-    const fetchTasks = async () => {
+    const fetchData = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/api/tasks/${username}`);
-        const data = await response.json();
-        setTasks(data);
+        // Fetch user tasks
+        const taskRes = await fetch(`http://localhost:8080/api/tasks/${username}`);
+        const taskData = await taskRes.json();
+        setTasks(taskData);
+
+        // Fetch user growth (study hours)
+        const growthRes = await fetch(`http://localhost:8080/api/growth/${username}`);
+        const growthData = await growthRes.json();
+        setGrowth(growthData);
+
         setLoading(false);
       } catch (error) {
-        console.error("Error fetching tasks:", error);
+        console.error("Error fetching dashboard data:", error);
       }
     };
 
-    fetchTasks();
+    fetchData();
   }, [username]);
 
   const handleLogout = () => {
@@ -35,13 +43,15 @@ const Dashboard = () => {
   if (loading) return <p>Loading your dashboard...</p>;
 
   const completedTasks = tasks.filter((t) => t.completed).length;
-  const totalHours = tasks.reduce((sum, t) => sum + (t.studyHours || 0), 0);
+  const totalHours = growth?.totalStudyHours || 0; // get total hours from growth API
 
   return (
     <div className="dashboard-container">
       <div className="dashboard-header">
         <h2>Welcome back, {username} 👋</h2>
-        <button onClick={handleLogout} className="logout-btn">Logout</button>
+        <button onClick={handleLogout} className="logout-btn">
+          Logout
+        </button>
       </div>
 
       <div className="stats-section">
