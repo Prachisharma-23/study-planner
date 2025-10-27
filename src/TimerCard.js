@@ -42,7 +42,7 @@ export default function TimerCard() {
     }
 
     try {
-      await axios.post(`http://demo-ut0u.onrender.com/api/timer/start/${username}`);
+      await axios.post(`http://localhost:8080/api/timer/start/${username}`);
       setStatus("Focusing...");
       setTotalTime(focusMinutes * 60);
       setTimeLeft(focusMinutes * 60);

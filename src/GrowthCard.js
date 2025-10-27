@@ -39,7 +39,7 @@ export default function GrowthCard() {
         return;
       }
 
-      const res = await axios.get(`http://demo-ut0u.onrender.com/api/growth/${username}`);
+      const res = await axios.get(`http://localhost:8080/api/growth/${username}`);
       setGrowth(res.data);
     } catch (err) {
       console.error("Error fetching growth:", err);

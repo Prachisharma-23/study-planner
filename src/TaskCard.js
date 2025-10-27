@@ -26,7 +26,7 @@ export default function TaskCard({ onTaskAdded }) {
     }
 
     const taskwithUser = { ...task, username };
-    axios.post("http://demo-ut0u.onrender.com/api/tasks", taskwithUser)
+    axios.post("http://localhost:8080/api/tasks", taskwithUser)
       .then((res) => {
         onTaskAdded && onTaskAdded(res.data);
         setTask({ title: "", category: "", deadline: "", priority: "Low" });

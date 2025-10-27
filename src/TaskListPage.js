@@ -33,7 +33,7 @@ export default function TaskListPage() {
       return;
     }
     axios
-      .get(`http://demo-ut0u.onrender.com/api/tasks/${username}`)
+      .get(`http://localhost:8080/api/tasks/${username}`)
       .then((response) => setTasks(response.data))
       .catch((error) => console.error("Error fetching tasks:", error));
   };
