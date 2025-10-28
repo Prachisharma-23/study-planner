@@ -13,7 +13,7 @@ export default function MotivationCard() {
   const fetchQuote = async () => {
 
     try {
-      const res = await axios.get(`https://demo-ut0u.onrender.com/api/quotes/random`);
+      const res = await axios.get(`https://demo-8cgw.onrender.com/api/quotes/random`);
       console.log("API response:", res.data);
 
       // ✅ adjust if backend returns different key
