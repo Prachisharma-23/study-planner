@@ -1,28 +1,80 @@
+/* Basic Navbar Styles */
 .navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: teal;
+  padding: 15px 30px;
   position: sticky;
   top: 0;
-  z-index: 1000;
+  z-index: 10;
+}
+
+.logo {
+  color: white;
+  font-weight: bold;
+  font-size: 1.5rem;
+}
+
+.nav-links {
   display: flex;
-  justify-content: flex-start;   /* align to left */
-  gap: 25px;
-  padding: 15px 40px;
-  background: #333;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  gap: 20px;
 }
 
 .nav-item {
   color: white;
   text-decoration: none;
-  font-size: 18px;
   font-weight: 500;
-  transition: color 0.3s, transform 0.2s;
+  transition: color 0.3s ease;
 }
 
 .nav-item:hover {
-  color: #ff9800;
-  transform: scale(1.05);
+  color: #d3f8f3;
 }
 
-.nav-item.active {
-  border-bottom: 2px solid #ff9800;
+/* Hide menu icon on desktop */
+.menu-icon {
+  display: none;
+  font-size: 1.8rem;
+  color: white;
+  cursor: pointer;
+}
+
+/* 🌐 Responsive (for screens smaller than 768px) */
+@media (max-width: 768px) {
+  .nav-links {
+    position: absolute;
+    top: 65px;
+    left: 0;
+    background: teal;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    padding: 20px 0;
+    display: none; /* hidden by default */
+  }
+
+  .nav-links.open {
+    display: flex; /* show when menu open */
+  }
+
+  .menu-icon {
+    display: block; /* show menu icon on small screens */
+  }
+}
+
+/* 🖥️ Optional: Style scaling for large screens */
+@media (min-width: 1200px) {
+  .navbar {
+    padding: 20px 80px;
+  }
+
+  .logo {
+    font-size: 2rem;
+  }
+
+  .nav-item {
+    font-size: 1.2rem;
+  }
 }
