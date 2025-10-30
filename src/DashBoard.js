@@ -17,12 +17,12 @@ const Dashboard = () => {
     const fetchData = async () => {
       try {
         // Fetch user tasks
-        const taskRes = await fetch(`https://demo-8cgw.onrender.com/api/tasks/${username}`);
+        const taskRes = await fetch(`https://demo-chrn.onrender.com/api/tasks/${username}`);
         const taskData = await taskRes.json();
         setTasks(taskData);
 
         // Fetch user growth (study hours)
-        const growthRes = await fetch(`https://demo-8cgw.onrender.com/api/growth/${username}`);
+        const growthRes = await fetch(`https://demo-chrn.onrender.com/api/growth/${username}`);
         const growthData = await growthRes.json();
         setGrowth(growthData);
 
