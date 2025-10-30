@@ -60,7 +60,7 @@ export default function TimerCard() {
     }
 
     try {
-      await axios.post(`http://localhost:8080/api/timer/start-break/${username}`);
+      await axios.post(`https://demo-chrn.onrender.com/api/timer/start-break/${username}`);
       setStatus("On Break...");
       setTotalTime(breakMinutes * 60);
       setTimeLeft(breakMinutes * 60);
@@ -78,7 +78,7 @@ export default function TimerCard() {
     }
 
     try {
-      await axios.post(`http://localhost:8080/api/timer/stop/${username}`);
+      await axios.post(`https://demo-chrn.onrender.com/api/timer/stop/${username}`);
       setIsRunning(false);
       setStatus("Stopped");
     } catch (error) {

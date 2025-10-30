@@ -64,7 +64,7 @@ export default function TaskListPage() {
 
   const markComplete = (taskId) => {
     axios
-      .put(`http://localhost:8080/api/tasks/${taskId}/complete`)
+      .put(`https://demo-chrn.onrender.com/api/tasks/${taskId}/complete`)
       .then(() => {
         fetchTasks();
         showCheerMessage(); // <-- call it here so it's used
@@ -74,7 +74,7 @@ export default function TaskListPage() {
 
   const deleteTask = (taskId) => {
     axios
-      .delete(`http://localhost:8080/api/tasks/${taskId}`)
+      .delete(`https://demo-chrn.onrender.com/api/tasks/${taskId}`)
       .then(() => fetchTasks())
       .catch((error) => console.error("Error deleting task:", error));
   };
