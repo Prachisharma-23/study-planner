@@ -7,7 +7,7 @@ export default function Navbar() {
 
   return (
     <nav className="navbar">
-      <div className="logo">Study Planner</div>
+
 
       <div className={`nav-links ${menuOpen ? "open" : ""}`}>
         <NavLink to="/" className="nav-item" onClick={() => setMenuOpen(false)}>Home</NavLink>
